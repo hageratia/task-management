@@ -1,16 +1,11 @@
-// src/store/taskStore.js
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 
 const tasksSlice = createSlice({
   name: "tasks",
-  initialState: { items: [], loading: false },
+  initialState: { items: [] },
   reducers: {
-    setLoading: (state, action) => {
-      state.loading = action.payload;
-    },
     setTasks: (state, action) => {
       state.items = action.payload;
-      state.loading = false;
     },
     addTask: (state, action) => {
       state.items.push(action.payload);
@@ -30,14 +25,8 @@ const tasksSlice = createSlice({
   },
 });
 
-export const {
-  setLoading,
-  setTasks,
-  addTask,
-  removeTask,
-  toggleComplete,
-  editTask,
-} = tasksSlice.actions;
+export const { setTasks, addTask, removeTask, toggleComplete, editTask } =
+  tasksSlice.actions;
 
 const store = configureStore({ reducer: { tasks: tasksSlice.reducer } });
 

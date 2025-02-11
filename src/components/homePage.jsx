@@ -5,10 +5,8 @@ import {
   addTask,
   removeTask,
   toggleComplete,
-  setLoading,
   editTask,
 } from "../store/taskStore";
-import { TailSpin } from "react-loader-spinner";
 import "../index.css";
 import { FaEdit, FaTrash, FaCheck, FaMoon, FaSun } from "react-icons/fa";
 import { MdSave } from "react-icons/md";
@@ -16,7 +14,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const HomePage = () => {
   const dispatch = useDispatch();
-  const { items: tasks, loading } = useSelector((state) => state.tasks);
+  const { items: tasks } = useSelector((state) => state.tasks);
   const [newTask, setNewTask] = useState("");
   const [editMode, setEditMode] = useState(null);
   const [editedTask, setEditedTask] = useState("");
@@ -30,7 +28,6 @@ const HomePage = () => {
     if (savedTasks) {
       dispatch(setTasks(JSON.parse(savedTasks)));
     } else {
-      dispatch(setLoading(true));
       fetch("https://jsonplaceholder.typicode.com/todos?_limit=5")
         .then((res) => res.json())
         .then((data) => {
@@ -134,90 +131,83 @@ const HomePage = () => {
           ))}
         </div>
 
-        {/* عرض المهام */}
-        {loading ? (
-          <div className="flex justify-center">
-            <TailSpin height="40" width="40" color="gray" ariaLabel="loading" />
-          </div>
-        ) : (
-          <ul className="space-y-2">
-            <AnimatePresence>
-              {filteredTasks.length > 0 ? (
-                filteredTasks.map((task) => (
-                  <motion.li
-                    key={task.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className={`flex justify-between items-center p-3 rounded-lg ${
-                      task.completed
-                        ? "bg-gray-500 line-through text-gray-300"
-                        : "bg-gray-300"
-                    }`}
-                  >
-                    {editMode === task.id ? (
-                      <input
-                        className="p-1 border border-gray-300 rounded-lg text-gray-700"
-                        type="text"
-                        value={editedTask}
-                        onChange={(e) => setEditedTask(e.target.value)}
-                      />
-                    ) : (
-                      <span className="flex items-center gap-2">
-                        {task.completed ? "✅" : "📌"} {task.title}
-                      </span>
-                    )}
+        <ul className="space-y-2">
+          <AnimatePresence>
+            {filteredTasks.length > 0 ? (
+              filteredTasks.map((task) => (
+                <motion.li
+                  key={task.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className={`flex justify-between items-center p-3 rounded-lg ${
+                    task.completed
+                      ? "bg-gray-500 line-through text-gray-300"
+                      : "bg-gray-300"
+                  }`}
+                >
+                  {editMode === task.id ? (
+                    <input
+                      className="p-1 border border-gray-300 rounded-lg text-gray-700"
+                      type="text"
+                      value={editedTask}
+                      onChange={(e) => setEditedTask(e.target.value)}
+                    />
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      {task.completed ? "✅" : "📌"} {task.title}
+                    </span>
+                  )}
 
-                    <div className="flex gap-2">
-                      {editMode === task.id ? (
-                        <motion.button
-                          whileHover={{ scale: 1.1 }}
-                          className="bg-blue-500 text-white px-2 py-1 rounded-lg hover:bg-blue-600"
-                          onClick={() => {
-                            dispatch(
-                              editTask({ id: task.id, newTitle: editedTask })
-                            );
-                            setEditMode(null);
-                          }}
-                        >
-                          <MdSave />
-                        </motion.button>
-                      ) : (
-                        <motion.button
-                          whileHover={{ scale: 1.1 }}
-                          className="bg-yellow-500 text-white px-2 py-1 rounded-lg hover:bg-yellow-600"
-                          onClick={() => {
-                            setEditMode(task.id);
-                            setEditedTask(task.title);
-                          }}
-                        >
-                          <FaEdit />
-                        </motion.button>
-                      )}
+                  <div className="flex gap-2">
+                    {editMode === task.id ? (
                       <motion.button
                         whileHover={{ scale: 1.1 }}
-                        className="bg-green-500 text-white px-2 py-1 rounded-lg hover:bg-green-600"
-                        onClick={() => dispatch(toggleComplete(task.id))}
+                        className="bg-blue-500 text-white px-2 py-1 rounded-lg hover:bg-blue-600"
+                        onClick={() => {
+                          dispatch(
+                            editTask({ id: task.id, newTitle: editedTask })
+                          );
+                          setEditMode(null);
+                        }}
                       >
-                        <FaCheck />
+                        <MdSave />
                       </motion.button>
+                    ) : (
                       <motion.button
                         whileHover={{ scale: 1.1 }}
-                        className="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600"
-                        onClick={() => dispatch(removeTask(task.id))}
+                        className="bg-yellow-500 text-white px-2 py-1 rounded-lg hover:bg-yellow-600"
+                        onClick={() => {
+                          setEditMode(task.id);
+                          setEditedTask(task.title);
+                        }}
                       >
-                        <FaTrash />
+                        <FaEdit />
                       </motion.button>
-                    </div>
-                  </motion.li>
-                ))
-              ) : (
-                <p className="text-gray-500 text-center">No Tasks Available</p>
-              )}
-            </AnimatePresence>
-          </ul>
-        )}
+                    )}
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      className="bg-green-500 text-white px-2 py-1 rounded-lg hover:bg-green-600"
+                      onClick={() => dispatch(toggleComplete(task.id))}
+                    >
+                      <FaCheck />
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      className="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600"
+                      onClick={() => dispatch(removeTask(task.id))}
+                    >
+                      <FaTrash />
+                    </motion.button>
+                  </div>
+                </motion.li>
+              ))
+            ) : (
+              <p className="text-gray-500 text-center">No Tasks Available</p>
+            )}
+          </AnimatePresence>
+        </ul>
       </motion.div>
     </motion.div>
   );
