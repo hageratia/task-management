@@ -78,7 +78,7 @@ const HomePage = () => {
           darkMode ? "bg-gray-800" : "bg-pink-100"
         } rounded-xl shadow-md p-5 w-full max-w-md`}
       >
-        {/* زر الوضع الليلي */}
+        
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-bold">📋 TODO</h1>
           <motion.button
@@ -90,8 +90,7 @@ const HomePage = () => {
             {darkMode ? <FaSun /> : <FaMoon />}
           </motion.button>
         </div>
-
-        {/* إدخال مهمة جديدة */}
+        
         <div className="flex items-center gap-2 mb-4">
           <input
             className="flex-1 p-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-300"
@@ -109,8 +108,7 @@ const HomePage = () => {
             Add TODO
           </motion.button>
         </div>
-
-        {/* الفلترة */}
+        
         <div className="flex justify-between mb-4">
           {["all", "completed", "incomplete"].map((type) => (
             <motion.button
